@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: aws-manager
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/awsmanager}
+    username: ${SPRING_DATASOURCE_USERNAME:awsuser}
+    password: ${SPRING_DATASOURCE_PASSWORD:awspass123}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+aws:
+  access-key-id: ${AWS_ACCESS_KEY_ID:test}
+  secret-access-key: ${AWS_SECRET_ACCESS_KEY:test}
+  region: ${AWS_REGION:us-east-1}
+  s3:
+    endpoint: ${AWS_S3_ENDPOINT:http://localhost:4566}
+    bucket-name: ${S3_BUCKET_NAME:aws-manager-files}
+    presigned-url-expiry-minutes: 60
+  ec2:
+    endpoint: ${AWS_EC2_ENDPOINT:http://localhost:4566}
+
+app:
+  env: ${APP_ENV:development}
+  cors:
+    allowed-origins: "*"
+  upload:
+    allowed-extensions: jpg,jpeg,png,gif,pdf,txt,csv,json,zip,mp4
+    max-file-size-mb: 100
+
+logging:
+  level:
+    com.awsmanager: DEBUG
+    software.amazon.awssdk: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
